@@ -1,0 +1,144 @@
+version: '3'
+
+networks:
+  qltech:
+
+services:
+    # nginx1.19
+    nginx:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/nginx:1.19
+      build: ./nginx
+      volumes:
+        - ./data:/var/www
+        - ./nginx/conf/:/etc/nginx/conf.d/
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./workspace:/workspace
+      ports:
+        - "80:80"
+      networks:
+        - qltech
+      depends_on:
+        - php7.2
+        - php7.4
+        - php8.0
+        # - node
+
+    # php8.0+composer2
+    php8.0:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/php:8.0
+      build: ./php8.0
+      volumes:
+        - ./workspace:/workspace
+      command: ["tail", "-f", "/dev/null"]
+      user: "${UID}:${GID}"
+      networks:
+        - qltech
+
+    php8.0-fpm:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/php:8.0
+      build: ./php8.0
+      volumes:
+        - ./workspace:/workspace
+      command: ["php-fpm"]
+      user: "${UID}:${GID}"
+      dns:
+        - 8.8.8.8
+        - 114.114.114.114
+      networks:
+        - qltech
+
+    # php7.4+composer2
+    php7.4:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/php:7.4
+      build: ./php7.4
+      volumes:
+        - ./workspace:/workspace
+      command: ["tail", "-f", "/dev/null"]
+      user: "${UID}:${GID}"
+      networks:
+        - qltech
+
+    # php7.2+composer1.10
+    php7.2:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/php:7.2
+      build: ./php7.2
+      volumes:
+        - ./workspace:/workspace
+      command: ["tail", "-f", "/dev/null"]
+      user: "${UID}:${GID}"
+      dns:
+        - 8.8.8.8
+        - 114.114.114.114
+      networks:
+        - qltech
+
+    # php7.2+composer1.10
+    php7.2-fpm:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/php:7.2
+      build: ./php7.2
+      volumes:
+        - ./workspace:/workspace
+      command: ["php-fpm"]
+      user: "${UID}:${GID}"
+      dns:
+        - 8.8.8.8
+        - 114.114.114.114
+      networks:
+        - qltech
+
+    # mysql5.6:
+    #   image: registry.cn-hangzhou.aliyuncs.com/qlan/mysql:5.6
+    #   build: ./mysql5.6
+    #   environment:
+    #     - MYSQL_ROOT_PASSWORD=root
+    #     - TZ=Asia/Shanghai
+    #   volumes:
+    #     - ~/.qldb/data/mysql:/var/lib/mysql
+    #   ports:
+    #     - "3306:3306"
+    #   networks:
+    #     - qltech
+
+    # mysql5.7:
+    #   image: registry.cn-hangzhou.aliyuncs.com/qlan/mysql:5.7
+    #   build: ./mysql5.7
+    #   environment:
+    #     - MYSQL_ROOT_PASSWORD=root
+    #     - TZ=Asia/Shanghai
+    #   volumes:
+    #     - ~/.qldb/data/mysql5.7:/var/lib/mysql
+    #   ports:
+    #     - "3307:3306"
+    #   networks:
+    #     - qltech
+
+    mysql8:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/mysql:8
+      build: ./mysql8
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - TZ=Asia/Shanghai
+      volumes:
+        - ~/.qldb/data/mysql8:/var/lib/mysql
+      ports:
+        - "3308:3306"
+      networks:
+        - qltech
+
+    redis5:
+      image: registry.cn-hangzhou.aliyuncs.com/qlan/redis:5
+      build: ./redis
+      ports:
+        - "6379:6379"
+      networks:
+        - qltech
+
+    # node:
+    #   image: registry.cn-hangzhou.aliyuncs.com/qlan/node:14
+    #   build: ./node
+    #   command: ["tail", "-f", "/dev/null"]
+    #   user: "${UID}:${GID}"
+    #   volumes:
+    #     - ./workspace:/workspace
+    #   networks:
+    #     - qltech
