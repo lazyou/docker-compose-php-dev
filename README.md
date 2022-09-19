@@ -4,6 +4,10 @@
 * php开发用 docker 环境, 包含 php7.2 php7.4 php8.0, mysql5.6 mysql5.7 mysql8.0, nginx1.19, node14, redis5.
 
 
+### 注意
+* 容器中 mysql 的数据文件保存至本机的 ~/.qldb 目录下，所以别误删了这个文件夹
+
+
 ### 运行环境要求
 * docker 20.10+
 
