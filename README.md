@@ -71,7 +71,7 @@ docker-compose restart nginx
 
 
 ### 6.3 查看某个服务日志
-* `docker-conpose logs [-f] nginx`
+* `docker-compose logs [-f] nginx`
 
 
 ### 7. 使用 phpmyadmin (然而不好用， 可临时用)
